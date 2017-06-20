@@ -51,32 +51,13 @@ extern GLuint wallList, groundList, skyBoxList;
 extern char mazeData[MAZE_HEIGHT][MAZE_WIDTH];
 
 
-
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(WINDOW_W, WINDOW_H);
 	glutCreateWindow("OpenGL");
-
-	//// 光照
-	//float ambientLight[] = { 0.3f, 0.5f, 0.8f, 1.0f };  // 环境光
-	//float diffuseLight[] = { 0.25f, 0.25f, 0.25f, 1.0f };  // 散射光
-	//													   //float lightPosition[] = {0.0f, 0.0f, 1.0f, 0.0f};  // 光源位置
-	//float lightPosition[] = { 0.0f, 1.5f, .0f, 0.0f };  // 光源位置
-	//													// 材质变量
-	//float matAmbient[] = { 1.0f,1.0f,1.0f,1.0f };
-	//float matDiff[] = { 1.0f,1.0f,1.0f,1.0f };
-	//glEnable(GL_LIGHTING);      //启用光照
-	//							//为LIGHT0设置析质
-	//glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
-	//glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiff);
-	////现在开始调协LIGHT0
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight); //设置环境光分量
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight); //设置散射光分量
-	//glLightfv(GL_LIGHT0, GL_POSITION, lightPosition); //设置光源在场景中的位置
-	//												  //启用光
-	//glEnable(GL_LIGHT0);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
@@ -106,8 +87,8 @@ int main(int argc, char* argv[]) {
 }
 
 
-void display(void) {
-	//cout << posX << " " << posY << endl;
+void display(void)
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
@@ -118,16 +99,11 @@ void display(void) {
 	// 绘制天空盒
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
-	glScalef(0.1, 0.1, 0.1);
 	glCallList(skyBoxList);
 	glPopMatrix();
 	// 绘制地面
 	glEnable(GL_LIGHTING);
 	glPushMatrix();
-	//glTranslatef(0, -0.5, 0);
-	glTranslatef(0, -0.5, 0);
-	//glScalef(10, 10, 10);
-	//glTranslatef(-1, 0, -1);
 	glTranslatef(-posX, 0, -posY);
 	glCallList(groundList);
 	glPopMatrix();
@@ -142,14 +118,17 @@ void display(void) {
 	glutSwapBuffers();
 }
 
-void mouse(int button, int state, int x, int y) { //  处理鼠标点击
-												  //  第一次鼠标按下时,记录鼠标在窗口中的初始坐标
-	if (state == GLUT_DOWN) {
+void mouse(int button, int state, int x, int y)
+{
+	// 第一次鼠标按下时,记录鼠标在窗口中的初始坐标
+	if (state == GLUT_DOWN)
+	{
 		oldmx = x, oldmy = y;
 	}
 }
 
-void motion(int x, int y) {  // 处理鼠标拖动
+void motion(int x, int y)
+{
 	rotateY += (oldmx - x);
 	//rotateX += (oldmy - y);
 
@@ -164,8 +143,10 @@ void motion(int x, int y) {  // 处理鼠标拖动
 	glutPostRedisplay();
 }
 
-void specialKeyboard(int key, int x, int y) {
-	switch (key) {
+void specialKeyboard(int key, int x, int y)
+{
+	switch (key)
+	{
 	case GLUT_KEY_UP:
 		keyUpPressed = true;
 		start = clock();
@@ -186,8 +167,10 @@ void specialKeyboard(int key, int x, int y) {
 	}
 }
 
-void upSpecialKeyboard(int key, int x, int y) {
-	switch (key) {
+void upSpecialKeyboard(int key, int x, int y)
+{
+	switch (key)
+	{
 	case GLUT_KEY_UP:
 		keyUpPressed = false;
 		break;
@@ -205,40 +188,51 @@ void upSpecialKeyboard(int key, int x, int y) {
 	glutPostRedisplay();
 }
 
-void idle() {
-	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed) {
+void idle()
+{
+	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed)
+	{
 		backupX = posX;
 		backupY = posY;
 		now = clock();
 	}
 	// 根据当前的角度范围，以及按下的方向键是哪一个，来判断应该对坐标进行什么计算
 	// 如，角度为-45~45，代表脸朝北，按下方向键：上 时，应该增加y坐标的值
-	if (keyUpPressed) {
-		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315) {
+	if (keyUpPressed)
+	{
+		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315)
+		{
 			posY -= (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 45 && rotateY < 135) {
+		else if (rotateY >= 45 && rotateY < 135)
+		{
 			posX += (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 135 && rotateY < 225) {
+		else if (rotateY >= 135 && rotateY < 225)
+		{
 			posY += (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 225 && rotateY < 315) {
+		else if (rotateY >= 225 && rotateY < 315)
+		{
 			posX -= (double)(now - start) / 1000;
 		}
 	}
 	else if (keyDownPressed)
 	{
-		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315) {
+		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315)
+		{
 			posY += (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 45 && rotateY < 135) {
+		else if (rotateY >= 45 && rotateY < 135)
+		{
 			posX -= (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 135 && rotateY < 225) {
+		else if (rotateY >= 135 && rotateY < 225)
+		{
 			posY -= (double)(now - start) / 1000;
 		}
-		else if (rotateY >= 225 && rotateY < 315) {
+		else if (rotateY >= 225 && rotateY < 315)
+		{
 			posX += (double)(now - start) / 1000;
 		}
 	}
@@ -251,8 +245,10 @@ void idle() {
 		rotateY -= (double)(now - start) / 10;
 	}
 
-	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed) {
-		if (collision(posX, posY)) {
+	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed)
+	{
+		if (collision(posX, posY))
+		{
 			posX = backupX;
 			posY = backupY;
 		}
@@ -264,10 +260,10 @@ void idle() {
 		start = now;
 		glutPostRedisplay();
 	}
-
 }
 
-bool collision(double x, double y) {
+bool collision(double x, double y)
+{
 	return false;
 	//return mazeData[int(y)][int(x)] == 'W';
 }

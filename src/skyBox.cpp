@@ -6,7 +6,8 @@ extern GLuint skyBoxTetureID[5];
 // x£º-2.5~2.5
 // y£º-2.5~2.5
 // z£º-2.5~2.5
-void drawSkyBox() {
+void drawSkyBox()
+{
 	glPushMatrix();
 	glScalef(5, 5, 5);
 
