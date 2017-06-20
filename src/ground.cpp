@@ -18,12 +18,16 @@ void drawGround() {
 			glTranslatef(j - 0.5, MAZE_WIDTH - 1.5 - i, 0);
 			glBegin(GL_QUADS);
 			glTexCoord2f(1, 1);
+			glNormal3f(0, 0, -1);
 			glVertex3f(1, 1, 0);
 			glTexCoord2f(1, 0);
+			glNormal3f(0, 0, -1);
 			glVertex3f(1, 0, 0);
 			glTexCoord2f(0, 0);
+			glNormal3f(0, 0, -1);
 			glVertex3f(0, 0, 0);
 			glTexCoord2f(0, 1);
+			glNormal3f(0, 0, -1);
 			glVertex3f(0, 1, 0);
 			glEnd();
 

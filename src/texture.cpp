@@ -38,7 +38,7 @@ void loadSkyBoxTexture() {
 	int width, height;
 	unsigned char* image;
 	for (int i = 0; i < 5; i++) {
-		filename[i] = string("Texture/skybox/") + filename[i];
+		filename[i] = string("../Texture/skybox/") + filename[i];
 
 		glBindTexture(GL_TEXTURE_2D, skyBoxTetureID[i]);
 		image = SOIL_load_image(filename[i].c_str(), &width, &height, 0, SOIL_LOAD_RGB);

@@ -26,6 +26,7 @@ void motion(int x, int y);
 void specialKeyboard(int key, int x, int y);
 void upSpecialKeyboard(int key, int x, int y);
 void idle();
+void SetupLights();
 
 // 碰撞检测，未实现
 bool collision(double x, double y);
@@ -80,10 +81,10 @@ int main(int argc, char* argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	loadTexture("Texture/wall.png", wallTextureID);
-	loadTexture("Texture/ground.jpg", groundTexureID);
+	loadTexture("../Texture/wall.png", wallTextureID);
+	loadTexture("../Texture/ground.jpg", groundTexureID);
 	loadSkyBoxTexture();
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);    //设置纹理环境
+	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);    //设置纹理环境
 	glEnable(GL_TEXTURE_2D);                                //启用二维纹理
 	generateDisplayList();
 
@@ -100,11 +101,25 @@ int main(int argc, char* argv[]) {
 	glutSpecialFunc(specialKeyboard);
 	glutSpecialUpFunc(upSpecialKeyboard);
 	glutIdleFunc(idle);
+	SetupLights();
 	glutMainLoop();
 
 	return 0;
 }
 
+//设置光源
+void SetupLights() {
+    GLfloat light_position[] ={3.0f,3.0f,0.0f,1.0f}; 
+    GLfloat ambientLight[]={0.5f,0.5f,0.5f,1.0f};	//白色环境光  
+    GLfloat diffuseLight[]={0.8f,0.8f,0.8f,0.8f};	//白色漫反射  
+    GLfloat specularLight[]={1.0f,1.0f,1.0f,1.0f};	//白色镜面光
+    glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);   //设置环境光源  
+    glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);   //设置漫反射光源  
+    glLightfv(GL_LIGHT0,GL_SPECULAR,specularLight); //设置镜面光源  
+    glLightfv(GL_LIGHT0,GL_POSITION,light_position);//设置灯光位置 
+    glEnable(GL_LIGHT0); //打开白色主光源
+    glEnable(GL_LIGHTING); 
+}
 
 void display(void) {
 	//cout << posX << " " << posY << endl;
