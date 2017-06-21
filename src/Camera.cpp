@@ -21,6 +21,7 @@ Camera::Camera()
 	mouseX = -1;
 	mouseY = -1;
 	speed = 0.2;
+	disableCol = false;
 }
 
 Camera::~Camera()
@@ -50,7 +51,7 @@ void Camera::moveW()
 	//center.y += vector.y * speed;
 	center.z += vector.z * speed;
 
-	if (collision()) {
+	if (!disableCol && collision()) {
 		position = backupPos;
 		center = backupCenter;
 		return;
@@ -75,7 +76,7 @@ void Camera::moveS()
 	//center.y += vector.y * speed;
 	center.z += vector.z * speed;
 
-	if (collision()) {
+	if (!disableCol && collision()) {
 		position = backupPos;
 		center = backupCenter;
 		return;
@@ -101,7 +102,7 @@ void Camera::moveA()
 	//center.y += vector.y * speed;
 	center.z += vector.z * speed;
 
-	if (collision()) {
+	if (!disableCol && collision()) {
 		position = backupPos;
 		center = backupCenter;
 		return;
@@ -127,7 +128,7 @@ void Camera::moveD()
 	//center.y += vector.y * speed;
 	center.z += vector.z * speed;
 
-	if (collision()) {
+	if (!disableCol && collision()) {
 		position = backupPos;
 		center = backupCenter;
 		return;
@@ -143,10 +144,12 @@ void Camera::moveMouse(int x, int y)
 		mouseY = y;
 		return;
 	}
-	else if (mouseX == x && mouseY == y) {
+	else if (mouseX == x && mouseY == y)
+	{
 		return;
 	}
-	else {
+	else
+	{
 		float aX = (float)(mouseX - x) / 100.0;
 		float aY = (float)(mouseY - y) / 250.0;
 		Vector3 vector = center - position;
@@ -158,13 +161,16 @@ void Camera::moveMouse(int x, int y)
 		vectorY.normalize();
 		Vector3 vectorXY;
 		//限制上下视角角度范围 
-		if (vector.y > 5 && vectorY.y * aY > 0) {
+		if (vector.y > 5 && vectorY.y * aY > 0)
+		{
 			vectorXY = vectorX * aX;
 		}
-		else if (vector.y < -5 && vectorY.y * aY < 0) {
+		else if (vector.y < -5 && vectorY.y * aY < 0)
+		{
 			vectorXY = vectorX * aX;
 		}
-		else {
+		else
+		{
 			vectorXY = vectorX * aX + vectorY * aY;
 		}
 		vectorXY = vectorXY * (length + 1.0);
@@ -204,6 +210,10 @@ Vector3 Camera::getUp()
 Vector3 Camera::getTranslate()
 {
 	return translate;
+}
+
+void Camera::disableCollision() {
+	disableCol = true;
 }
 
 // 简单的碰撞检测

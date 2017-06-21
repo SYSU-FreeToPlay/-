@@ -11,11 +11,12 @@
 #include "..\include\ground.h"
 #include "..\include\displayList.h"
 #include "..\include\Camera.h"
+#include "..\include\AssimpLoad.h"
 
 using namespace std;
 
-#define WINDOW_W 400
-#define WINDOW_H 400
+#define WINDOW_W 600
+#define WINDOW_H 600
 #define M_PI 3.14159265358979323846
 #define GLUT_WHEEL_UP 3
 #define GLUT_WHEEL_DOWN 4
@@ -27,10 +28,12 @@ void motion(int x, int y);
 void specialKeyboard(int key, int x, int y);
 void upSpecialKeyboard(int key, int x, int y);
 void idle();
+void reshape(int width, int height);
 
 void SetupLights();
 
 Camera *camera = new Camera();
+AssimpLoad model;
 
 // 纹理
 extern GLuint wallTextureID, groundTexureID;
@@ -52,9 +55,17 @@ int main(int argc, char* argv[])
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
+	// 载入模型
+	if (!model.Load("Model/spider.obj"))
+	{
+		cout << "Failed to load spider.obj" << endl;
+		cout << endl;
+	}
 	// 载入纹理
-	loadTexture("../Texture/wall.png", wallTextureID);
-	loadTexture("../Texture/ground.jpg", groundTexureID);
+	loadTexture("Texture/wall.png", wallTextureID);
+	loadTexture("Texture/ground.jpg", groundTexureID);
+	//loadTexture("../Texture/wall.png", wallTextureID);
+	//loadTexture("../Texture/ground.jpg", groundTexureID);
 	loadSkyBoxTexture();
 	// 启用二维纹理
 	glEnable(GL_TEXTURE_2D);
@@ -66,6 +77,7 @@ int main(int argc, char* argv[])
 	glLoadIdentity();
 	gluPerspective(75.0, 1.0, 0.1, 60.0);
 	glMatrixMode(GL_MODELVIEW);
+	glViewport(0, 0, WINDOW_W, WINDOW_H);
 
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
@@ -75,6 +87,7 @@ int main(int argc, char* argv[])
 	glutSpecialFunc(specialKeyboard);
 	glutSpecialUpFunc(upSpecialKeyboard);
 	glutIdleFunc(idle);
+	glutReshapeFunc(reshape);
 	SetupLights();
 	glutMainLoop();
 
@@ -120,6 +133,14 @@ void display(void)
 	// 绘制迷宫
 	glPushMatrix();
 	glCallList(wallList);
+	glPopMatrix();
+
+	// 绘制模型
+	glPushMatrix();
+	
+	glTranslatef(13.5, 0, 16.5);
+	glRotatef(-90, 0, 1, 0);
+	model.Display();
 	glPopMatrix();
 
 	glPopMatrix();
@@ -169,4 +190,14 @@ void upSpecialKeyboard(int key, int x, int y)
 
 void idle()
 {
+}
+
+void reshape(int width, int height)
+{
+	// 设置投影
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(75.0, (float)width / height, 0.1, 60.0);
+	glMatrixMode(GL_MODELVIEW);
+	glViewport(0, 0, width, height);
 }

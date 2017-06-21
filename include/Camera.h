@@ -41,17 +41,27 @@ public:
 
 	Vector3 getTranslate();
 
+	void disableCollision();
+
 private:
 	// 简单的碰撞检测
 	bool collision();
 
 	Vector3 position; //位置 
+
 	Vector3 center; //朝向 
+
 	Vector3 upVector; //向上方向 
+
 	Vector3 translate;
+
 	int mouseX;
+
 	int mouseY;
+
 	float speed;
+
+	bool disableCol;
 };
 
 #endif
