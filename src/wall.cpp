@@ -34,9 +34,15 @@ void drawWalls()
 // 创建一个带纹理的正方体，作为墙壁的绘制单元
 // x：0~1
 // y：0~1
-// z：-1~0
+// z：0~1
 void drawWallUnit()
 {
+	//glPushMatrix();
+	//glTranslatef(0.5, 0.5, 0.5);
+	//glutSolidCube(1);
+	//glPopMatrix();
+	//return;
+
 	glPushMatrix();
 	drawWallFace();
 	glPopMatrix();

@@ -3,13 +3,13 @@
 
 extern GLuint skyBoxTetureID[5];
 
-// x£º-2.5~2.5
-// y£º-2.5~2.5
-// z£º-2.5~2.5
+// x£º-25~25
+// y£º-25~25
+// z£º-25~25
 void drawSkyBox()
 {
 	glPushMatrix();
-	glScalef(5, 5, 5);
+	glScalef(50, 50, 50);
 
 	glPushAttrib(GL_ENABLE_BIT);
 	glEnable(GL_TEXTURE_2D);

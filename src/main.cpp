@@ -10,6 +10,7 @@
 #include "..\include\skyBox.h"
 #include "..\include\ground.h"
 #include "..\include\displayList.h"
+#include "..\include\Camera.h"
 
 using namespace std;
 
@@ -26,22 +27,10 @@ void motion(int x, int y);
 void specialKeyboard(int key, int x, int y);
 void upSpecialKeyboard(int key, int x, int y);
 void idle();
+
 void SetupLights();
 
-// 碰撞检测，未实现
-bool collision(double x, double y);
-
-// 用于移动玩家位置
-bool keyUpPressed = false, keyDownPressed = false, keyLeftPressed = false, keyRightPressed = false;
-clock_t start, now;
-
-// 用于旋转视角
-static int oldmy, oldmx;
-double rotateY = 0, rotateX = 0;
-
-// 记录玩家当前位置
-double posX = 1, posY = 1;
-double backupX = 1, backupY = 1;
+Camera *camera = new Camera();
 
 // 纹理
 extern GLuint wallTextureID, groundTexureID;
@@ -62,13 +51,17 @@ int main(int argc, char* argv[])
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
+
+	// 载入纹理
 	loadTexture("../Texture/wall.png", wallTextureID);
 	loadTexture("../Texture/ground.jpg", groundTexureID);
 	loadSkyBoxTexture();
-	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);    //设置纹理环境
-	glEnable(GL_TEXTURE_2D);                                //启用二维纹理
+	// 启用二维纹理
+	glEnable(GL_TEXTURE_2D);
+
 	generateDisplayList();
 
+	// 设置投影
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(75.0, 1.0, 0.1, 60.0);
@@ -108,23 +101,24 @@ void display(void)
 
 	glPushMatrix();
 	glLoadIdentity();
-	glRotatef(rotateY, 0, 1, 0);
-	//glRotatef(rotateX, 1, 0, 0);
+	// 通过相机来实现第一人称漫游
+	camera->setCamera();
 
 	// 绘制天空盒
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
+	// 使天空盒与eye相对静止
+	camera->moveSkyBox();
 	glCallList(skyBoxList);
 	glPopMatrix();
 	// 绘制地面
 	glEnable(GL_LIGHTING);
 	glPushMatrix();
-	glTranslatef(-posX, 0, -posY);
 	glCallList(groundList);
 	glPopMatrix();
+
 	// 绘制迷宫
 	glPushMatrix();
-	glTranslatef(-posX, 0, -posY);
 	glCallList(wallList);
 	glPopMatrix();
 
@@ -135,26 +129,12 @@ void display(void)
 
 void mouse(int button, int state, int x, int y)
 {
-	// 第一次鼠标按下时,记录鼠标在窗口中的初始坐标
-	if (state == GLUT_DOWN)
-	{
-		oldmx = x, oldmy = y;
-	}
 }
 
 void motion(int x, int y)
 {
-	rotateY += (oldmx - x);
-	//rotateX += (oldmy - y);
-
-	while (rotateY < 0)
-		rotateY += 360;
-	while (rotateY >= 360)
-		rotateY -= 360;
-
-	oldmx = x;
-	oldmy = y;
-
+	// 通过相机来实现第一人称漫游
+	camera->moveMouse(x, y);
 	glutPostRedisplay();
 }
 
@@ -163,122 +143,30 @@ void specialKeyboard(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		keyUpPressed = true;
-		start = clock();
+		camera->moveW();
+		glutPostRedisplay();
 		break;
 	case GLUT_KEY_DOWN:
-		keyDownPressed = true;
-		start = clock();
+		camera->moveS();
+		glutPostRedisplay();
 		break;
 	case GLUT_KEY_LEFT:
-		keyLeftPressed = true;
-		start = clock();
+		camera->moveA();
+		glutPostRedisplay();
 		break;
 	case GLUT_KEY_RIGHT:
-		keyRightPressed = true;
-		start = clock();
+		camera->moveD();
+		glutPostRedisplay();
 		break;
 	default:break;
 	}
+	return;
 }
 
 void upSpecialKeyboard(int key, int x, int y)
 {
-	switch (key)
-	{
-	case GLUT_KEY_UP:
-		keyUpPressed = false;
-		break;
-	case GLUT_KEY_DOWN:
-		keyDownPressed = false;
-		break;
-	case GLUT_KEY_LEFT:
-		keyLeftPressed = false;
-		break;
-	case GLUT_KEY_RIGHT:
-		keyRightPressed = false;
-		break;
-	default:break;
-	}
-	glutPostRedisplay();
 }
 
 void idle()
 {
-	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed)
-	{
-		backupX = posX;
-		backupY = posY;
-		now = clock();
-	}
-	// 根据当前的角度范围，以及按下的方向键是哪一个，来判断应该对坐标进行什么计算
-	// 如，角度为-45~45，代表脸朝北，按下方向键：上 时，应该增加y坐标的值
-	if (keyUpPressed)
-	{
-		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315)
-		{
-			posY -= (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 45 && rotateY < 135)
-		{
-			posX += (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 135 && rotateY < 225)
-		{
-			posY += (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 225 && rotateY < 315)
-		{
-			posX -= (double)(now - start) / 1000;
-		}
-	}
-	else if (keyDownPressed)
-	{
-		if ((rotateY >= 0 && rotateY < 45) || rotateY >= 315)
-		{
-			posY += (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 45 && rotateY < 135)
-		{
-			posX -= (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 135 && rotateY < 225)
-		{
-			posY -= (double)(now - start) / 1000;
-		}
-		else if (rotateY >= 225 && rotateY < 315)
-		{
-			posX += (double)(now - start) / 1000;
-		}
-	}
-	else if (keyRightPressed)
-	{
-		rotateY += (double)(now - start) / 10;
-	}
-	else if (keyLeftPressed)
-	{
-		rotateY -= (double)(now - start) / 10;
-	}
-
-	if (keyUpPressed || keyDownPressed || keyLeftPressed || keyRightPressed)
-	{
-		if (collision(posX, posY))
-		{
-			posX = backupX;
-			posY = backupY;
-		}
-
-		while (rotateY < 0)
-			rotateY += 360;
-		while (rotateY >= 360)
-			rotateY -= 360;
-		start = now;
-		glutPostRedisplay();
-	}
-}
-
-bool collision(double x, double y)
-{
-	return false;
-	//return mazeData[int(y)][int(x)] == 'W';
 }
