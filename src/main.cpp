@@ -13,6 +13,7 @@
 #include "..\include\displayList.h"
 #include "..\include\Camera.h"
 #include "..\include\AssimpLoad.h"
+#include "..\include\arrow.h"
 
 using namespace std;
 
@@ -46,12 +47,12 @@ AssimpLoad model;
 
 bool arriveExit = false;
 
-// ÎÆÀí
+// çº¹ç†
 GLuint wallTextureID, groundTexureID;
 vector<GLuint> skyBoxTetureID(5);
-// ÏÔÊ¾ÁĞ±í
+// æ˜¾ç¤ºåˆ—è¡¨
 GLuint wallList, groundList, skyBoxList;
-// ÃÔ¹¬
+// è¿·å®«
 extern char mazeData[MAZE_HEIGHT][MAZE_WIDTH];
 
 
@@ -66,39 +67,39 @@ int main(int argc, char* argv[])
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	// ÔØÈëÄ£ĞÍ
+	// è½½å…¥æ¨¡å‹
 	if (!model.Load("Model/spider.obj"))
 	{
 		cout << "Failed to load spider.obj" << endl;
 		cout << endl;
 	}
 
-	// ÔØÈëÎÆÀí
+	// è½½å…¥çº¹ç†
 	loadTexture("Texture/wall.png", wallTextureID);
 	loadTexture("Texture/ground.jpg", groundTexureID);
 	loadSkyBoxTexture(skyBoxTetureID);
-	// ÆôÓÃ¶şÎ¬ÎÆÀí
+	// å¯ç”¨äºŒç»´çº¹ç†
 	glEnable(GL_TEXTURE_2D);
 
-	// Éú³ÉÏÔÊ¾ÁĞ±í
+	// ç”Ÿæˆæ˜¾ç¤ºåˆ—è¡¨
 	generateDisplayList(wallList, groundList, skyBoxList);
 
-	// ÉèÖÃÏà»ú
+	// è®¾ç½®ç›¸æœº
 	camera3->setPosition(Vector3(8, 16, 8));
 	camera3->setCenter(Vector3(8, 0, 8));
 	camera3->setUp(Vector3(0, 0, -1));
 
-	// ÉèÖÃÍ¶Ó°
+	// è®¾ç½®æŠ•å½±
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(75.0, 1.0, 0.1, 60.0);
 	glMatrixMode(GL_MODELVIEW);
 	glViewport(0, 0, WINDOW_W, WINDOW_H);
 
-	// ÉèÖÃ±³¾°ÑÕÉ«
+	// è®¾ç½®èƒŒæ™¯é¢œè‰²
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
-	// ÏÔÊ¾°ïÖúĞÅÏ¢
+	// æ˜¾ç¤ºå¸®åŠ©ä¿¡æ¯
 	showHelpInfo();
 
 	glutDisplayFunc(display);
@@ -115,17 +116,17 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-//ÉèÖÃ¹âÔ´
+//è®¾ç½®å…‰æº
 void SetupLights() {
     GLfloat light_position[] ={3.0f,3.0f,0.0f,1.0f}; 
-    GLfloat ambientLight[]={0.5f,0.5f,0.5f,1.0f};	//°×É«»·¾³¹â  
-    GLfloat diffuseLight[]={0.8f,0.8f,0.8f,0.8f};	//°×É«Âş·´Éä  
-    GLfloat specularLight[]={1.0f,1.0f,1.0f,1.0f};	//°×É«¾µÃæ¹â
-    glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);   //ÉèÖÃ»·¾³¹âÔ´  
-    glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);   //ÉèÖÃÂş·´Éä¹âÔ´  
-    glLightfv(GL_LIGHT0,GL_SPECULAR,specularLight); //ÉèÖÃ¾µÃæ¹âÔ´  
-    glLightfv(GL_LIGHT0,GL_POSITION,light_position);//ÉèÖÃµÆ¹âÎ»ÖÃ 
-    glEnable(GL_LIGHT0); //´ò¿ª°×É«Ö÷¹âÔ´
+    GLfloat ambientLight[]={0.5f,0.5f,0.5f,1.0f};	//ç™½è‰²ç¯å¢ƒå…‰  
+    GLfloat diffuseLight[]={0.8f,0.8f,0.8f,0.8f};	//ç™½è‰²æ¼«åå°„  
+    GLfloat specularLight[]={1.0f,1.0f,1.0f,1.0f};	//ç™½è‰²é•œé¢å…‰
+    glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);   //è®¾ç½®ç¯å¢ƒå…‰æº  
+    glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);   //è®¾ç½®æ¼«åå°„å…‰æº  
+    glLightfv(GL_LIGHT0,GL_SPECULAR,specularLight); //è®¾ç½®é•œé¢å…‰æº  
+    glLightfv(GL_LIGHT0,GL_POSITION,light_position);//è®¾ç½®ç¯å…‰ä½ç½® 
+    glEnable(GL_LIGHT0); //æ‰“å¼€ç™½è‰²ä¸»å…‰æº
     glEnable(GL_LIGHTING); 
 }
 
@@ -135,7 +136,7 @@ void display(void)
 
 	glPushMatrix();
 	glLoadIdentity();
-	// Í¨¹ıÏà»úÀ´ÊµÏÖµÚÒ»ÈË³ÆÂşÓÎ
+	// é€šè¿‡ç›¸æœºæ¥å®ç°ç¬¬ä¸€äººç§°æ¼«æ¸¸
 	if (cameraFlag == FPS)
 	{
 		camera1->setCamera();
@@ -154,10 +155,10 @@ void display(void)
 	}
 	
 
-	// »æÖÆÌì¿ÕºĞ
+	// ç»˜åˆ¶å¤©ç©ºç›’
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
-	// Ê¹Ìì¿ÕºĞÓëeyeÏà¶Ô¾²Ö¹
+	// ä½¿å¤©ç©ºç›’ä¸eyeç›¸å¯¹é™æ­¢
 	if (cameraFlag == FPS)
 	{
 		camera1->moveSkyBox();
@@ -165,22 +166,29 @@ void display(void)
 	glTranslatef(8, 0, 8);
 	glCallList(skyBoxList);
 	glPopMatrix();
-	// »æÖÆµØÃæ
+	// ç»˜åˆ¶åœ°é¢
 	glEnable(GL_LIGHTING);
 	glPushMatrix();
 	glCallList(groundList);
 	glPopMatrix();
 
-	// »æÖÆÃÔ¹¬
+	// ç»˜åˆ¶è¿·å®«
 	glPushMatrix();
 	glCallList(wallList);
 	glPopMatrix();
 
-	// »æÖÆÄ£ĞÍ
+	// ç»˜åˆ¶æ¨¡å‹
 	glPushMatrix();
 	glTranslatef(13.5, 0, 16.5);
 	glRotatef(-90, 0, 1, 0);
 	model.Display();
+	glPopMatrix();
+
+	glPushMatrix();
+	if (cameraFlag == TPS)
+	{
+		drawRoadToExit();
+	}
 	glPopMatrix();
 
 	glPopMatrix();
@@ -194,7 +202,7 @@ void mouse(int button, int state, int x, int y)
 
 void motion(int x, int y)
 {
-	// Í¨¹ıÏà»úÀ´ÊµÏÖµÚÒ»ÈË³ÆÂşÓÎ
+	// é€šè¿‡ç›¸æœºæ¥å®ç°ç¬¬ä¸€äººç§°æ¼«æ¸¸
 	if (cameraFlag == FPS)
 	{
 		camera1->moveMouse(x, y);
@@ -343,13 +351,13 @@ void idle()
 	if (!arriveExit && (int)(pos.x + 0.2) == 13 && (int)(pos.z + 0.2) == 15)
 	{
 		arriveExit = true;
-		cout << "¹§Ï²µ½´ïÃÔ¹¬³ö¿Ú£¡" << endl;
+		cout << "æ­å–œåˆ°è¾¾è¿·å®«å‡ºå£ï¼" << endl;
 	}
 }
 
 void reshape(int width, int height)
 {
-	// ÉèÖÃÍ¶Ó°
+	// è®¾ç½®æŠ•å½±
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(75.0, (float)width / height, 0.1, 60.0);
@@ -386,10 +394,10 @@ void showHelpInfo()
 	cout << "But you can't move under the third person perspective.";
 	cout << endl;
 	cout << "---------- ";
-	cout << "You can find your current position in the maze.";
+	cout << "You can find your current position in the maze, and road to exit.";
 	cout << endl;
 	cout << "---------- ";
-	cout << "So please try to remember the maze structure.";
+	cout << "So please try to remember the maze structure and road to exit.";
 	cout << endl;
 	cout << "---------- ";
 	cout << "If you finish remembering, press 1 on the keyboard, and return to the first person perspective";
