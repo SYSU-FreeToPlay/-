@@ -14,10 +14,12 @@ Camera::Camera()
 	Vector3 defaultPos = Vector3(1.5, 0, 1.5);
 	Vector3 defaultCenter = Vector3(1.5, 0, 5);
 	Vector3 defaultUp = Vector3(0.0, 1.0, 0.0);
+	Vector3 defaultTranslate = Vector3(0, 0, 0);
 
 	position = defaultPos;
 	center = defaultCenter;
 	upVector = defaultUp;
+	translate = defaultTranslate;
 	mouseX = -1;
 	mouseY = -1;
 	speed = 0.2;
@@ -152,13 +154,17 @@ void Camera::moveMouse(int x, int y)
 	{
 		float aX = (float)(mouseX - x) / 100.0;
 		float aY = (float)(mouseY - y) / 250.0;
+
 		Vector3 vector = center - position;
 		Vector3 vectorX = vector.normalVector(upVector) * (-1);
 		Vector3 vectorY = upVector;
+
 		float length = (float)(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 		float radius = (float)(vector.x * vector.x + vector.z * vector.z);
+
 		vectorX.normalize();
 		vectorY.normalize();
+
 		Vector3 vectorXY;
 		//限制上下视角角度范围 
 		if (vector.y > 5 && vectorY.y * aY > 0)
@@ -197,14 +203,29 @@ Vector3 Camera::getPostion()
 	return position;
 }
 
+void Camera::setPosition(Vector3 pos)
+{
+	position = pos;
+}
+
 Vector3 Camera::getCenter()
 {
 	return center;
 }
 
+void Camera::setCenter(Vector3 c)
+{
+	center = c;
+}
+
 Vector3 Camera::getUp()
 {
 	return upVector;
+}
+
+void Camera::setUp(Vector3 up)
+{
+	upVector = up;
 }
 
 Vector3 Camera::getTranslate()

@@ -37,11 +37,11 @@ void drawWalls()
 // z£º0~1
 void drawWallUnit()
 {
-	//glPushMatrix();
-	//glTranslatef(0.5, 0.5, 0.5);
-	//glutSolidCube(1);
-	//glPopMatrix();
-	//return;
+	/*glPushMatrix();
+	glTranslatef(0.5, 0.5, 0.5);
+	glutSolidCube(1);
+	glPopMatrix();
+	return;*/
 
 	glPushMatrix();
 	drawWallFace();

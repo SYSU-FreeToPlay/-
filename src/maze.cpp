@@ -42,32 +42,3 @@ char mazeData[MAZE_HEIGHT][MAZE_WIDTH] =
    v
    z axis*/
 
-#include <cstdlib>
-
-class Maze
-{
-public:
-	Maze();
-	~Maze();
-
-private:
-	char data[MAZE_HEIGHT][MAZE_WIDTH];
-	void generate();
-	int row;
-	int col;
-	int endRow;
-	int endCol;
-};
-
-Maze::Maze()
-{
-	row = MAZE_HEIGHT;
-	col = MAZE_WIDTH;
-	endRow = 15;
-	endCol = 13;
-	rand() % 16;
-}
-
-Maze::~Maze()
-{
-}

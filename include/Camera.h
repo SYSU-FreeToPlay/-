@@ -35,9 +35,15 @@ public:
 
 	Vector3 getPostion();
 
+	void setPosition(Vector3 pos);
+
 	Vector3 getCenter();
 
+	void setCenter(Vector3 c);
+
 	Vector3 getUp();
+
+	void setUp(Vector3 up);
 
 	Vector3 getTranslate();
 

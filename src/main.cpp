@@ -25,6 +25,7 @@ using namespace std;
 void display();
 void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
+void keyboard(unsigned char key, int x, int y);
 void specialKeyboard(int key, int x, int y);
 void upSpecialKeyboard(int key, int x, int y);
 void idle();
@@ -32,8 +33,15 @@ void reshape(int width, int height);
 
 void SetupLights();
 
-Camera *camera = new Camera();
+#define FPS false
+#define TPS true
+bool cameraFlag = FPS;
+Camera *camera1 = new Camera();
+Camera *camera3 = new Camera();
+
 AssimpLoad model;
+
+bool arriveExit = false;
 
 // 纹理
 extern GLuint wallTextureID, groundTexureID;
@@ -61,16 +69,21 @@ int main(int argc, char* argv[])
 		cout << "Failed to load spider.obj" << endl;
 		cout << endl;
 	}
+
 	// 载入纹理
 	loadTexture("Texture/wall.png", wallTextureID);
 	loadTexture("Texture/ground.jpg", groundTexureID);
-	//loadTexture("../Texture/wall.png", wallTextureID);
-	//loadTexture("../Texture/ground.jpg", groundTexureID);
 	loadSkyBoxTexture();
 	// 启用二维纹理
 	glEnable(GL_TEXTURE_2D);
 
+	// 生成显示列表
 	generateDisplayList();
+
+	// 设置相机
+	camera3->setPosition(Vector3(8, 16, 8));
+	camera3->setCenter(Vector3(8, 0, 8));
+	camera3->setUp(Vector3(0, 0, -1));
 
 	// 设置投影
 	glMatrixMode(GL_PROJECTION);
@@ -79,11 +92,13 @@ int main(int argc, char* argv[])
 	glMatrixMode(GL_MODELVIEW);
 	glViewport(0, 0, WINDOW_W, WINDOW_H);
 
+	// 设置背景颜色
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	glutDisplayFunc(display);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
+	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(specialKeyboard);
 	glutSpecialUpFunc(upSpecialKeyboard);
 	glutIdleFunc(idle);
@@ -115,13 +130,33 @@ void display(void)
 	glPushMatrix();
 	glLoadIdentity();
 	// 通过相机来实现第一人称漫游
-	camera->setCamera();
+	if (cameraFlag == FPS)
+	{
+		camera1->setCamera();
+	}
+	else
+	{
+		camera3->setCamera();
+		Vector3 pos = camera1->getPostion();
+
+		glBegin(GL_QUADS);
+		glVertex3f(pos.x + 0.2, pos.y, pos.z + 0.2);
+		glVertex3f(pos.x + 0.2, pos.y, pos.z - 0.2);
+		glVertex3f(pos.x - 0.2, pos.y, pos.z - 0.2);
+		glVertex3f(pos.x - 0.2, pos.y, pos.z + 0.2);
+		glEnd();
+	}
+	
 
 	// 绘制天空盒
 	glDisable(GL_LIGHTING);
 	glPushMatrix();
 	// 使天空盒与eye相对静止
-	camera->moveSkyBox();
+	if (cameraFlag == FPS)
+	{
+		camera1->moveSkyBox();
+	}
+	glTranslatef(8, 0, 8);
 	glCallList(skyBoxList);
 	glPopMatrix();
 	// 绘制地面
@@ -137,7 +172,6 @@ void display(void)
 
 	// 绘制模型
 	glPushMatrix();
-	
 	glTranslatef(13.5, 0, 16.5);
 	glRotatef(-90, 0, 1, 0);
 	model.Display();
@@ -155,32 +189,77 @@ void mouse(int button, int state, int x, int y)
 void motion(int x, int y)
 {
 	// 通过相机来实现第一人称漫游
-	camera->moveMouse(x, y);
+	if (cameraFlag == FPS)
+	{
+		camera1->moveMouse(x, y);
+	}
+
 	glutPostRedisplay();
+}
+
+void keyboard(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+
+	case '1':
+		cameraFlag = FPS;
+		glutPostRedisplay();
+		break;
+
+	case '3':
+		cameraFlag = TPS;
+		glutPostRedisplay();
+		break;
+
+	default:
+		break;
+
+	}
 }
 
 void specialKeyboard(int key, int x, int y)
 {
 	switch (key)
 	{
+
 	case GLUT_KEY_UP:
-		camera->moveW();
+		if (cameraFlag == FPS)
+		{
+			camera1->moveW();
+		}
 		glutPostRedisplay();
 		break;
+
 	case GLUT_KEY_DOWN:
-		camera->moveS();
+		if (cameraFlag == FPS)
+		{
+			camera1->moveS();
+		}
 		glutPostRedisplay();
 		break;
+
 	case GLUT_KEY_LEFT:
-		camera->moveA();
+		if (cameraFlag == FPS)
+		{
+			camera1->moveA();
+		}
 		glutPostRedisplay();
 		break;
+
 	case GLUT_KEY_RIGHT:
-		camera->moveD();
+		if (cameraFlag == FPS)
+		{
+			camera1->moveD();
+		}
 		glutPostRedisplay();
 		break;
-	default:break;
+
+	default:
+		break;
+
 	}
+
 	return;
 }
 
@@ -190,6 +269,12 @@ void upSpecialKeyboard(int key, int x, int y)
 
 void idle()
 {
+	Vector3 pos = camera1->getPostion();
+	if (!arriveExit && (int)(pos.x + 0.2) == 13 && (int)(pos.z + 0.2) == 15)
+	{
+		arriveExit = true;
+		cout << "恭喜到达迷宫出口！" << endl;
+	}
 }
 
 void reshape(int width, int height)
