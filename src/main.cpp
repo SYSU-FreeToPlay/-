@@ -2,6 +2,7 @@
 #include <soil.h>
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include <string>
 #include <time.h>
 #include "..\include\maze.h"
@@ -33,6 +34,8 @@ void reshape(int width, int height);
 
 void SetupLights();
 
+void showHelpInfo();
+
 #define FPS false
 #define TPS true
 bool cameraFlag = FPS;
@@ -44,10 +47,10 @@ AssimpLoad model;
 bool arriveExit = false;
 
 // 纹理
-extern GLuint wallTextureID, groundTexureID;
-extern GLuint skyBoxTetureID[5];
+GLuint wallTextureID, groundTexureID;
+vector<GLuint> skyBoxTetureID(5);
 // 显示列表
-extern GLuint wallList, groundList, skyBoxList;
+GLuint wallList, groundList, skyBoxList;
 // 迷宫
 extern char mazeData[MAZE_HEIGHT][MAZE_WIDTH];
 
@@ -73,12 +76,12 @@ int main(int argc, char* argv[])
 	// 载入纹理
 	loadTexture("Texture/wall.png", wallTextureID);
 	loadTexture("Texture/ground.jpg", groundTexureID);
-	loadSkyBoxTexture();
+	loadSkyBoxTexture(skyBoxTetureID);
 	// 启用二维纹理
 	glEnable(GL_TEXTURE_2D);
 
 	// 生成显示列表
-	generateDisplayList();
+	generateDisplayList(wallList, groundList, skyBoxList);
 
 	// 设置相机
 	camera3->setPosition(Vector3(8, 16, 8));
@@ -94,6 +97,9 @@ int main(int argc, char* argv[])
 
 	// 设置背景颜色
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+
+	// 显示帮助信息
+	showHelpInfo();
 
 	glutDisplayFunc(display);
 	glutMouseFunc(mouse);
@@ -212,6 +218,70 @@ void keyboard(unsigned char key, int x, int y)
 		glutPostRedisplay();
 		break;
 
+	case 'w':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveW();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'W':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveW();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 's':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveS();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'S':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveS();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'a':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveA();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'A':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveA();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'd':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveD();
+		}
+		glutPostRedisplay();
+		break;
+
+	case 'D':
+		if (cameraFlag == FPS)
+		{
+			camera1->moveD();
+		}
+		glutPostRedisplay();
+		break;
+
 	default:
 		break;
 
@@ -285,4 +355,46 @@ void reshape(int width, int height)
 	gluPerspective(75.0, (float)width / height, 0.1, 60.0);
 	glMatrixMode(GL_MODELVIEW);
 	glViewport(0, 0, width, height);
+}
+
+void showHelpInfo()
+{
+	cout << "---------- ";
+	cout << "Welcome to Maze: The Lost World!";
+	cout << "---------- ";
+	cout << endl;
+	cout << "---------- ";
+	cout << endl;
+	cout << "---------- ";
+	cout << "This is a simple maze game.";
+	cout << endl;
+	cout << "---------- ";
+	cout << endl;
+	cout << "---------- ";
+	cout << "Use direction key to move up, down, left, or right.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "Keys W, A, S, D also work. Either upper case and lower case is ok.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "If you feels difficult to arrive at the exit,";
+	cout << endl;
+	cout << "---------- ";
+	cout << "press 3 on the keyboard, and enjoy a third person perspective.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "But you can't move under the third person perspective.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "You can find your current position in the maze.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "So please try to remember the maze structure.";
+	cout << endl;
+	cout << "---------- ";
+	cout << "If you finish remembering, press 1 on the keyboard, and return to the first person perspective";
+	cout << endl;
+	cout << "---------- ";
+	cout << "Fight!";
+	cout << endl;
 }

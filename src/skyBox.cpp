@@ -1,7 +1,8 @@
 #include <GL\freeglut.h>
+#include <vector>
 #include "..\include\skyBox.h"
 
-extern GLuint skyBoxTetureID[5];
+extern std::vector<GLuint> skyBoxTetureID;
 
 // x£º-25~25
 // y£º-25~25

@@ -5,9 +5,6 @@
 #include "..\include\texture.h"
 using namespace std;
 
-GLuint wallTextureID, groundTexureID;
-GLuint skyBoxTetureID[5];
-
 
 void loadTexture(string filename, GLuint &textureID) {
 	cout << "start loading texture of wall" << endl;
@@ -31,7 +28,8 @@ void loadTexture(string filename, GLuint &textureID) {
 	cout << endl;
 }
 
-void loadSkyBoxTexture() {
+void loadSkyBoxTexture(std::vector<GLuint> &skyBoxTetureID)
+{
 	cout << "start loading textures of SkyBox" << endl;
 	string filename[] = { "1_left.jpg", "2_front.jpg", "3_right.jpg", "4_back.jpg", "5_top.jpg" };
 	glGenTextures(5, &skyBoxTetureID[0]);
@@ -42,7 +40,7 @@ void loadSkyBoxTexture() {
 
 		glBindTexture(GL_TEXTURE_2D, skyBoxTetureID[i]);
 		image = SOIL_load_image(filename[i].c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-		cout << width << " " << height << endl;
+		cout << "image width: " << width << " " << "image height: " << height << endl;
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);    //设置纹理参数

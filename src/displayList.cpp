@@ -4,9 +4,8 @@
 #include "..\include\ground.h"
 #include "..\include\skyBox.h"
 
-GLuint wallList, groundList, skyBoxList;
-
-void generateDisplayList() {
+void generateDisplayList(GLuint &wallList, GLuint &groundList, GLuint &skyBoxList)
+{
 	wallList = glGenLists(1);
 	glNewList(wallList, GL_COMPILE);
 	drawWalls();

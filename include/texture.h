@@ -3,8 +3,9 @@
 
 #include <GL/freeglut.h>
 #include <string>
+#include <vector>
 
 void loadTexture(std::string filename, GLuint &textureID);
-void loadSkyBoxTexture();
+void loadSkyBoxTexture(std::vector<GLuint> &skyBoxTetureID);
 
 #endif

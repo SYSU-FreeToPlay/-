@@ -3,6 +3,6 @@
 
 #include <GL\freeglut.h>
 
-void generateDisplayList();
+void generateDisplayList(GLuint &wallList, GLuint &groundList, GLuint &skyBoxList);
 
 #endif
