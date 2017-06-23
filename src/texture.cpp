@@ -14,7 +14,7 @@ void loadTexture(string filename, GLuint &textureID) {
 	unsigned char* image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);    //设置纹理参数
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);    //璁剧疆绾圭悊鍙傛暟
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -36,14 +36,14 @@ void loadSkyBoxTexture(std::vector<GLuint> &skyBoxTetureID)
 	int width, height;
 	unsigned char* image;
 	for (int i = 0; i < 5; i++) {
-		filename[i] = string("../Texture/skybox/") + filename[i];
+		filename[i] = string("Texture/skybox/") + filename[i];
 
 		glBindTexture(GL_TEXTURE_2D, skyBoxTetureID[i]);
 		image = SOIL_load_image(filename[i].c_str(), &width, &height, 0, SOIL_LOAD_RGB);
 		cout << "image width: " << width << " " << "image height: " << height << endl;
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);    //设置纹理参数
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);    //璁剧疆绾圭悊鍙傛暟
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
